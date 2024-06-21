@@ -91,7 +91,8 @@ class ApnsClient(PushService):
         logging.info(self.payload)
 
         PATH = "/3/device/{0}".format(token)
-        self.headers = self.build_headers(push_type=apns["push_type"])
+        push_type = apns["push_type"] if "push_type" in apns else "alert"
+        self.headers = self.build_headers(push_type=push_type)
 
         self.http2.request("POST", PATH, self.payload, headers=self.headers)
         resp = self.http2.get_response()
