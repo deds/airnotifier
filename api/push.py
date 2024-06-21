@@ -117,8 +117,8 @@ class PushHandler(APIBaseHandler):
             except:
                 apns_conn = None
             if apns_conn is not None and device.startswith(DEVICE_TYPE_IOS):
-            logging.info("munging device to %s from %s because apns is present" % (DEVICE_TYPE_IOS, device))
-            device = DEVICE_TYPE_IOS
+                logging.info("munging device to %s from %s because apns is present" % (DEVICE_TYPE_IOS, device))
+                device = DEVICE_TYPE_IOS
 
             logging.info("sending notification to %s: %s" % (device, self.token))
             #  if device in [DEVICE_TYPE_FCM, DEVICE_TYPE_ANDROID]:
