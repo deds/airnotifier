@@ -42,7 +42,7 @@ class AppBroadcastHandler(WebBaseHandler):
         self.render("app_broadcast.html", app=app, sent=False)
 
     @tornado.web.authenticated
-    def post(self, appname):
+    async def post(self, appname):
         self.appname = appname
         app = self.masterdb.applications.find_one({"shortname": appname})
         if not app:
@@ -50,7 +50,7 @@ class AppBroadcastHandler(WebBaseHandler):
         alert = self.get_argument("notification").strip()
         sound = "default"
         channel = "default"
-        self.application.send_broadcast(
+        await self.application.send_broadcast(
             self.appname, self.db, channel=channel, alert=alert, sound=sound
         )
         self.render("app_broadcast.html", app=app, sent=True)
