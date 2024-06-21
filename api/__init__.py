@@ -267,6 +267,14 @@ class TokenV1Handler(APIBaseHandler):
 
         device = self.get_argument("device", DEVICE_TYPE_FCM).lower()
 
+        # Hack for moodlemobile in case it appends -fcm to the iOS device.
+        # We want to check if we have a configured apns connection and munge
+        # the registered device to be of type ios so that we can do broadcast tests.
+        # This is not needed if you are actually pushing to iOS devices using FCM.
+        apns = self.apnsconnections.get(self.appname, None)
+        if apns and device.startswith(DEVICE_TYPE_IOS):
+            device = DEVICE_TYPE_IOS
+
         if device == DEVICE_TYPE_IOS and devicetoken:
             if len(devicetoken) != 64:
                 # hack until we resolve some bugs at the moodle side
