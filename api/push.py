@@ -108,6 +108,18 @@ class PushHandler(APIBaseHandler):
                     self.send_response(INTERNAL_SERVER_ERROR, dict(error=str(ex)))
                     return
 
+            # Hack for moodlemobile in case it appends -fcm to the iOS device.
+            # We want to check if we have a configured apns connection and munge
+            # the registered device to be of type ios so that we use the apns connection.
+            # This is not needed if you are actually pushing to iOS devices using FCM.
+            try:
+                apns_conn = self.get_apns_conn()
+            except:
+                apns_conn = None
+            if apns_conn is not None and device.startswith(DEVICE_TYPE_IOS):
+            logging.info("munging device to %s from %s because apns is present" % (DEVICE_TYPE_IOS, device))
+            device = DEVICE_TYPE_IOS
+
             logging.info("sending notification to %s: %s" % (device, self.token))
             #  if device in [DEVICE_TYPE_FCM, DEVICE_TYPE_ANDROID]:
             if device.endswith(DEVICE_TYPE_FCM):
