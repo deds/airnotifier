@@ -10,7 +10,12 @@ def process_pushnotification_payload(data):
     site = extra.get("site", None)
     timecreated = extra.get("timecreated", None)
     message = extra.get("smallmessage", None)
-    notif = extra.get("notification", None)
+    # notif = extra.get("notification", None)
+    # notification is a reserved word for the data object
+    # and can't  be used in the data field which is being
+    # passed to data["fcm"] so we pop instead of get
+    notif = extra.pop("notification", None)
+    extra.setdefault("notif", notif)
     title = extra.get("sitefullname", None)
 
     if not message:
